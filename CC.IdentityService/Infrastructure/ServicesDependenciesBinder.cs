@@ -1,4 +1,6 @@
-﻿using CC.IdentityService.Models.Settings;
+﻿using CC.IdentityService.Interfaces;
+using CC.IdentityService.Models.Settings;
+using CC.IdentityService.Repository;
 
 namespace CC.IdentityService.Infrastructure
 {
@@ -8,6 +10,8 @@ namespace CC.IdentityService.Infrastructure
         {
             services.Configure<IdentitySettings>(configuration.GetSection(IdentitySettings.SectionName));
 
+            //Singleton services
+            services.AddSingleton<IAuthRepository, AuthRepository>();
             services.AddAutoMapper(typeof(MappingSetup));
         }
     }
