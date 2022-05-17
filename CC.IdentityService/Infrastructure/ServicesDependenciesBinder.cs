@@ -8,6 +8,7 @@ namespace CC.IdentityService.Infrastructure
         {
             services.Configure<IdentitySettings>(configuration.GetSection(IdentitySettings.SectionName));
 
+            services.AddAutoMapper(typeof(MappingSetup));
         }
     }
 }
