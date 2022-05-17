@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CC.UploadService", "CC.Uplo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CC.IdentityService", "CC.IdentityService\CC.IdentityService.csproj", "{01C79E36-0439-49EF-94C4-CCA38DDDB449}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CC.Common", "CC.Common\CC.Common.csproj", "{455F086A-AACE-4A47-8402-1EE2E46E8A11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{01C79E36-0439-49EF-94C4-CCA38DDDB449}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01C79E36-0439-49EF-94C4-CCA38DDDB449}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01C79E36-0439-49EF-94C4-CCA38DDDB449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{455F086A-AACE-4A47-8402-1EE2E46E8A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{455F086A-AACE-4A47-8402-1EE2E46E8A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{455F086A-AACE-4A47-8402-1EE2E46E8A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{455F086A-AACE-4A47-8402-1EE2E46E8A11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
