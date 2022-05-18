@@ -5,5 +5,6 @@
         public static string SectionName = "IdentitySettings";
         public string Secret { get; set; } = string.Empty;
         public string Issuer { get; set; } = string.Empty;
+        public IList<AuthCredentials> AuthCredentials { get; set; } = new List<AuthCredentials>();
     }
 }
