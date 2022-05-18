@@ -1,6 +1,8 @@
-﻿using CC.IdentityService.Interfaces;
+﻿using CC.Common;
+using CC.IdentityService.Interfaces;
 using CC.IdentityService.Models.Settings;
 using CC.IdentityService.Repository;
+using CC.IdentityService.Workers;
 
 namespace CC.IdentityService.Infrastructure
 {
@@ -9,6 +11,9 @@ namespace CC.IdentityService.Infrastructure
         public static void BindServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<IdentitySettings>(configuration.GetSection(IdentitySettings.SectionName));
+
+            //Scoped services
+            services.AddScoped<IAuthWorker, AuthWorker>();
 
             //Singleton services
             services.AddSingleton<IAuthRepository, AuthRepository>();
