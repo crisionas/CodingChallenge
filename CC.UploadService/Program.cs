@@ -3,6 +3,7 @@ using CC.UploadService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.BindServices(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -16,6 +17,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
