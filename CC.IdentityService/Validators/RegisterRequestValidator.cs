@@ -25,6 +25,12 @@ namespace CC.IdentityService.Validators
                 .NotEmpty()
                 .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
 
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .WithErrorCode(StatusCodes.Status400BadRequest.ToString())
+                .EmailAddress()
+                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+
             RuleFor(x => x.Scopes)
                 .NotNull()
                 .WithErrorCode(StatusCodes.Status400BadRequest.ToString())

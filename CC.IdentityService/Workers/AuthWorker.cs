@@ -87,6 +87,7 @@ namespace CC.IdentityService.Workers
             {
                 new(ClaimTypes.Role, "user"),
                 new(ClaimTypes.Name, user.Username!),
+                new(ClaimTypes.Email, user.Email!),
                 new("id", user.Id!),
                 new("company", user.Company!)
             };

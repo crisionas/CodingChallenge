@@ -8,6 +8,8 @@
 
         public string? Company { get; set; }
 
+        public string? Email { get; set; }
+
         public List<string> Scopes { get; set; } = new();
     }
 }
