@@ -33,14 +33,14 @@ namespace CC.IdentityServiceTests
             var authWorker = new AuthWorker(CreateFakeLogger<AuthWorker>(), CreateAutoMapper(),
                 CreateMoqObject<AuthRepository>(), _settingsOptions);
             AuthController = new AuthController(authWorker, new RegisterRequestValidator(_settingsOptions),
-                CreateMoqObject<AuthRequestValidator>());
+                new AuthRequestValidator());
         }
 
         private void InitOptions()
         {
             _settingsOptions = Options.Create(new IdentitySettings
             {
-                Secret = "testSecret",
+                Secret = "Secret for test cases",
                 Issuer = "http://test:5201",
                 AuthCredentials = new List<AuthCredentials>
                 {
