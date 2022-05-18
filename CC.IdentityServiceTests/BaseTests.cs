@@ -17,8 +17,8 @@ namespace CC.IdentityServiceTests
 {
     public class BaseTests
     {
-        protected AuthController AuthController;
-        private IOptions<IdentitySettings> _settingsOptions;
+        protected AuthController AuthController = null!;
+        private IOptions<IdentitySettings> _settingsOptions = null!;
 
         public BaseTests()
         {
