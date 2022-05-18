@@ -12,6 +12,12 @@ namespace CC.Common
             Logger = logger;
         }
 
+        /// <summary>
+        /// Write Response
+        /// </summary>
+        /// <param name="response">BaseResponse</param>
+        /// <param name="e">Exception</param>
+        /// <param name="text">Error text</param>
         protected void WriteBaseResponse(BaseResponse? response, Exception e, string text)
         {
             Logger.LogError(e, text);
