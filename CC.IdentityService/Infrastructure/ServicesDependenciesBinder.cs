@@ -3,6 +3,8 @@ using CC.IdentityService.Interfaces;
 using CC.IdentityService.Models.Settings;
 using CC.IdentityService.Repository;
 using CC.IdentityService.Workers;
+using FluentValidation;
+using System.Reflection;
 
 namespace CC.IdentityService.Infrastructure
 {
@@ -22,6 +24,9 @@ namespace CC.IdentityService.Infrastructure
             //Singleton services
             services.AddSingleton<IAuthRepository, AuthRepository>();
             services.AddAutoMapper(typeof(MappingSetup));
+
+            //Add Fluent validation DJ
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }
