@@ -1,4 +1,4 @@
-﻿namespace CC.IdentityService.Models
+﻿namespace CC.IdentityService.Repository.Entities
 {
     public class User
     {
@@ -6,5 +6,6 @@
         public string? Username { get; set; }
         public string? Password { get; set; }
         public string? Company { get; set; }
+        public IList<string> Scopes { get; set; } = new List<string>();
     }
 }

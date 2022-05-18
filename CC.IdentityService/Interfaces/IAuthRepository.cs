@@ -1,4 +1,4 @@
-﻿using CC.IdentityService.Models;
+﻿using CC.IdentityService.Repository.Entities;
 
 namespace CC.IdentityService.Interfaces
 {
