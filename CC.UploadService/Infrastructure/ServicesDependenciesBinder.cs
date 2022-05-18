@@ -1,4 +1,6 @@
 ﻿using CC.Common;
+using CC.UploadService.Interfaces;
+using CC.UploadService.Repository;
 using FluentValidation;
 using System.Reflection;
 
@@ -10,6 +12,7 @@ namespace CC.UploadService.Infrastructure
         {
             //Add Singleton
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IFileRepository, FileRepository>();
 
             //Add Authentication
             services.AddIdentityAuthentication(configuration);
