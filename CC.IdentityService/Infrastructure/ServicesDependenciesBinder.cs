@@ -10,6 +10,10 @@ namespace CC.IdentityService.Infrastructure
     {
         public static void BindServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // Add Authentication
+            services.AddIdentityAuthentication(configuration);
+
+            // Add Options
             services.Configure<IdentitySettings>(configuration.GetSection(IdentitySettings.SectionName));
 
             //Scoped services
