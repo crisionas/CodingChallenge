@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using CC.IdentityService.Models;
 using CC.IdentityService.Models.Requests;
+using CC.IdentityService.Repository.Entities;
 
 namespace CC.IdentityService.Infrastructure
 {

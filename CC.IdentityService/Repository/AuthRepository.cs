@@ -19,7 +19,13 @@ namespace CC.IdentityService.Repository
 
         public async Task SaveUserAsync(User user)
         {
-            await Task.Run(() => _db.TryAdd(user.Username!, user));
+            await Task.Run(() =>
+            {
+                var entity = _db.TryGetValue(user.Username!, out _);
+                if (entity)
+                    throw new Exception("The user already exists");
+                _db.TryAdd(user.Username!, user);
+            });
         }
     }
 }
