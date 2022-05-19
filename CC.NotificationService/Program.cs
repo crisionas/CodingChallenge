@@ -1,15 +1,23 @@
-using CC.Common;
-using CC.NotificationService.Infrastructure;
+using CC.NotificationService.Interfaces;
+using CC.NotificationService.Models;
+using CC.NotificationService.Workers;
+using FluentValidation;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add Options
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(SmtpSettings.SectionName));
 
-builder.Services.BindServices(builder.Configuration);
+//Add Fluent validation DJ
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+//Add Scoped Services
+builder.Services.AddScoped<IEmailWorker, EmailWorker>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGenOptions();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
