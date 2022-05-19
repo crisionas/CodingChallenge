@@ -3,6 +3,8 @@ using CC.UploadService.DataMiners;
 using CC.UploadService.Helpers;
 using CC.UploadService.Interfaces;
 using CC.UploadService.Models.Requests;
+using CC.UploadService.Models.Responses;
+using Hangfire;
 
 namespace CC.UploadService.Workers
 {
@@ -10,15 +12,18 @@ namespace CC.UploadService.Workers
     {
         private readonly IUserRequestSettings _requestSettings;
         private readonly IFileRepository _fileRepository;
-        public FileUploaderWorker(ILogger<FileUploaderWorker> logger, IUserRequestSettings requestSettings, IFileRepository fileRepository) : base(logger)
+        private readonly IBackgroundJobClient _jobClient;
+
+        public FileUploaderWorker(ILogger<FileUploaderWorker> logger, IUserRequestSettings requestSettings, IFileRepository fileRepository, IBackgroundJobClient jobClient) : base(logger)
         {
             _requestSettings = requestSettings;
             _fileRepository = fileRepository;
+            _jobClient = jobClient;
         }
 
-
-        public async Task UploadFileAsync(FileUploadRequest request)
+        public async Task<FileUploadResponse> UploadFileAsync(FileUploadRequest request)
         {
+            var response = new FileUploadResponse();
             try
             {
                 if (request.File == null)
@@ -28,22 +33,24 @@ namespace CC.UploadService.Workers
 
                 Logger.LogDebug($"File with main name {request.Name}, {request.File.Name} has started processing.");
 
-                await dataMiner?.ExecuteAsync(request)!;
+                response.TrackId = await dataMiner?.ExecuteAsync(request)!;
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "UploadFileAsync error");
+                WriteBaseResponse(response, e, "UploadFileAsync error");
             }
+
+            return response;
         }
 
         #region private methods
 
         private IDataMiner? SelectDataMiner(string fileType)
         {
-            if (string.Equals(fileType, FileFormats.DocxFormat))
-                return new DocxDataMiner(GetLogger<DocxDataMiner>(), _fileRepository, _requestSettings);
+            if (string.Equals(fileType, FileFormats.PdfFormat))
+                return new PdfDataMiner(GetLogger<PdfDataMiner>(), _fileRepository, _requestSettings, _jobClient);
             if (string.Equals(fileType, FileFormats.CsvFormat))
-                return new CsvDataMiner(GetLogger<CsvDataMiner>(), _fileRepository, _requestSettings);
+                return new CsvDataMiner(GetLogger<CsvDataMiner>(), _fileRepository, _requestSettings, _jobClient);
             throw new Exception($"File type {fileType} is not supported.");
         }
 

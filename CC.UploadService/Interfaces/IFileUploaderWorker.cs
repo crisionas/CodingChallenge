@@ -1,4 +1,5 @@
 ﻿using CC.UploadService.Models.Requests;
+using CC.UploadService.Models.Responses;
 
 namespace CC.UploadService.Interfaces
 {
@@ -9,6 +10,6 @@ namespace CC.UploadService.Interfaces
         /// </summary>
         /// <param name="request">FileUploadRequest</param>
         /// <returns>Task</returns>
-        Task UploadFileAsync(FileUploadRequest request);
+        Task<FileUploadResponse> UploadFileAsync(FileUploadRequest request);
     }
 }
