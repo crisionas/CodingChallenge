@@ -10,12 +10,10 @@ namespace CC.UploadService.Validators
             ClassLevelCascadeMode = CascadeMode.Stop;
 
             RuleFor(x => x.Name)
-                .NotEmpty()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+                .NotEmpty();
 
             RuleFor(x => x.File)
                 .NotNull()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString())
                 .SetValidator(new FileValidator()!);
         }
     }

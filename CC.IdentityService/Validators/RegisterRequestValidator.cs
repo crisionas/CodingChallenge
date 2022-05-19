@@ -14,32 +14,25 @@ namespace CC.IdentityService.Validators
             ClassLevelCascadeMode = CascadeMode.Stop;
 
             RuleFor(x => x.Username)
-                .NotEmpty()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+                .NotEmpty();
+
 
             RuleFor(x => x.Password)
-                .NotEmpty()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+                .NotEmpty();
 
             RuleFor(x => x.Company)
-                .NotEmpty()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+                .NotEmpty();
 
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString())
-                .EmailAddress()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+                .EmailAddress();
 
             RuleFor(x => x.Scopes)
                 .NotNull()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString())
                 .ForEach(x =>
                 {
                     x.NotEmpty()
-                        .WithErrorCode(StatusCodes.Status400BadRequest.ToString())
                         .Must(g => settings.AuthCredentials.Select(a => a.Scope).Contains(g))
-                        .WithErrorCode(StatusCodes.Status400BadRequest.ToString())
                         .WithMessage("The scopes are invalid.");
                 });
         }

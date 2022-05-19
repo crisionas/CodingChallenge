@@ -10,12 +10,10 @@ namespace CC.IdentityService.Validators
             ClassLevelCascadeMode = CascadeMode.Stop;
 
             RuleFor(x => x.Username)
-                .NotEmpty()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+                .NotEmpty();
 
             RuleFor(x => x.Password)
-                .NotEmpty()
-                .WithErrorCode(StatusCodes.Status400BadRequest.ToString());
+                .NotEmpty();
         }
     }
 }
