@@ -3,6 +3,7 @@ using CC.Common.Models;
 using CC.NotificationService.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CC.NotificationService.Controllers
 {
@@ -19,6 +20,7 @@ namespace CC.NotificationService.Controllers
             _emailValidator = emailValidator;
         }
 
+        [SwaggerOperation(Summary = "Send email notification to specific email.")]
         [HttpPost]
         [ProducesResponseType(204, Type = typeof(void))]
         [ProducesResponseType(400, Type = typeof(BaseResponse))]

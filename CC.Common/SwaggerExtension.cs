@@ -9,6 +9,8 @@ namespace CC.Common
         {
             services.AddSwaggerGen(options =>
             {
+                options.EnableAnnotations();
+
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 

@@ -4,6 +4,7 @@ using CC.UploadService.Models.Requests;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CC.UploadService.Controllers
 {
@@ -23,6 +24,7 @@ namespace CC.UploadService.Controllers
             _fileUploaderWorker = fileUploaderWorker;
         }
 
+        [SwaggerOperation(Summary = "Upload file. Supported files: CSV or PDF")]
         [HttpPost]
         [RequestFormLimits(ValueLengthLimit = MaxValue, MultipartBodyLengthLimit = MaxValue)]
         [DisableRequestSizeLimit]

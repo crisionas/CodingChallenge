@@ -6,6 +6,7 @@ using CC.IdentityService.Models.Responses;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CC.IdentityService.Controllers
 {
@@ -26,7 +27,7 @@ namespace CC.IdentityService.Controllers
             _authValidator = authValidator;
         }
 
-        //Should not be access without authentication 
+        [SwaggerOperation(Summary = "Test method for checking authentication process.")]
         [HttpGet("test")]
         [ProducesResponseType(200, Type = typeof(string))]
         [ProducesResponseType(401, Type = typeof(void))]
@@ -34,8 +35,8 @@ namespace CC.IdentityService.Controllers
         {
             return Ok("Authenticated successfully.");
         }
-
-        //TODO:This API is for generating users, available scopes: notify.scope, identity.scope and upload.scope
+        
+        [SwaggerOperation(Summary = "Register process, to access UploadService need to use its scope, available scopes: identity.scope, and upload.scope.")]
         [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(204, Type = typeof(void))]
@@ -50,6 +51,7 @@ namespace CC.IdentityService.Controllers
             return PrepareNoContentResult(response);
         }
 
+        [SwaggerOperation(Summary = "Authentication Api. Copy token and access service.")]
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(200, Type = typeof(AuthResponse))]

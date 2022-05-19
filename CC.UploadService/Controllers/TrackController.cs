@@ -3,6 +3,7 @@ using CC.UploadService.Interfaces;
 using CC.UploadService.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CC.UploadService.Controllers
 {
@@ -16,6 +17,8 @@ namespace CC.UploadService.Controllers
         {
             _trackWorker = trackWorker;
         }
+
+        [SwaggerOperation(Summary = "Track job id. Insert the id after the incoming response from the upload controller.")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(FileUploadResponse))]
         [ProducesResponseType(400, Type = typeof(FileUploadResponse))]
