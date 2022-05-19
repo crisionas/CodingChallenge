@@ -46,7 +46,7 @@ namespace CC.UploadService.DataMiners
 
                 Logger.LogDebug("ParseData process has started.");
                 var trackId = _jobClient.Enqueue(() => ParseData(byteArray));
-                await SendMailAsync(_userRequest.Email!, $"Your file has started processing. Tracking Id: {trackId}");
+                await SendMailAsync(_userRequest.Email!, $"Your file with name {request.Name}, {request.File?.FileName} has started processing. Tracking Id: {trackId}");
 
                 var fileData = AttachFileData(trackId);
 
@@ -56,7 +56,7 @@ namespace CC.UploadService.DataMiners
                 Logger.LogDebug("SaveData process has started.");
                 BackgroundJob.ContinueJobWith(trackId, () => SaveData(fileData));
 
-                BackgroundJob.ContinueJobWith(trackId, () => SendResult(true, null, _userRequest.Email));
+                BackgroundJob.ContinueJobWith(trackId, () => SendResult(true, $"File: {request.Name}, {request.File!.FileName} TrackId: {trackId} ", _userRequest.Email));
             }
             catch (Exception e)
             {
@@ -103,15 +103,15 @@ namespace CC.UploadService.DataMiners
         /// Send the final result
         /// </summary>
         /// <param name="isSuccessful">The process success</param>
-        /// <param name="errorMessage">Error message</param>
+        /// <param name="message">Error message</param>
         /// <param name="email">Email is necessary to be explicit within Hangfire jobs</param>
         /// <returns></returns>
-        public async Task SendResult(bool isSuccessful = true, string? errorMessage = null, string? email = null)
+        public async Task SendResult(bool isSuccessful = true, string? message = null, string? email = null)
         {
-            var message = isSuccessful
-                ? "The file was uploaded successful."
-                : $"The file upload failed. Error:{errorMessage}";
-            await SendMailAsync(_userRequest.Email! ?? email!, message);
+            var finalMessage = isSuccessful
+                ? $"The file was uploaded successful. {message}"
+                : $"The file upload failed. Error:{message}";
+            await SendMailAsync(_userRequest.Email! ?? email!, finalMessage);
         }
 
         #endregion
