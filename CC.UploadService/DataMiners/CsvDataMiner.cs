@@ -13,13 +13,23 @@ namespace CC.UploadService.DataMiners
         {
         }
 
+        /// <summary>
+        /// Parse Csv data from memoryStream
+        /// </summary>
+        /// <param name="byteArray">Byte array</param>
+        /// <returns>string</returns>
         public override void ParseData(byte[] byteArray)
         {
             ParsedString = Encoding.UTF8.GetString(byteArray);
         }
 
+        /// <summary>
+        /// Analyze the data particular to CSV files
+        /// </summary>
+        /// <returns>Task</returns>
         public override void AnalyzeData()
         {
+            // Ignore
         }
     }
 }

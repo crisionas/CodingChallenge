@@ -15,7 +15,7 @@ namespace CC.UploadService.DataMiners
         }
 
         /// <summary>
-        /// Parse Docx data from memoryStream
+        /// Parse Pdf data from memoryStream
         /// </summary>
         /// <param name="byteArray">Byte array</param>
         /// <returns>string</returns>
@@ -33,11 +33,12 @@ namespace CC.UploadService.DataMiners
         }
 
         /// <summary>
-        /// Analyze the data particular to CSV files
+        /// Analyze the data particular to Pdf files
         /// </summary>
         /// <returns>Task</returns>
         public override void AnalyzeData()
         {
+            // Ignore
         }
     }
 }
