@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  cc.identityservice:
+    image: ${DOCKER_REGISTRY-}ccidentityservice
+    build:
+      context: .
+      dockerfile: CC.IdentityService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+    - "7082:7082"
+    networks:
+      - front
+
+  cc.notificationservice:
+    image: ${DOCKER_REGISTRY-}ccnotificationservice
+    build:
+      context: .
+      dockerfile: CC.NotificationService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+    - "7081:7081"
+    links:
+      - cc.uploadservice
+    networks:
+      - front
+
+  cc.uploadservice:
+    image: ${DOCKER_REGISTRY-}ccuploadservice
+    build:
+      context: .
+      dockerfile: CC.UploadService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+    - "7080:7080"
+    links:
+      - cc.identityservice
+    networks:
+      - front
+
+networks:
+  front:
+     driver: bridge
