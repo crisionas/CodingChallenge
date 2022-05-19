@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using CC.UploadService.Helpers;
+using FluentValidation;
 
 namespace CC.UploadService.Validators
 {
@@ -12,7 +13,7 @@ namespace CC.UploadService.Validators
 
             RuleFor(x => x.ContentType)
                 .NotNull()
-                .Must(x => x.Equals("text/csv") || x.Equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
+                .Must(x => x.Equals(FileFormats.CsvFormat) || x.Equals(FileFormats.DocxFormat))
                 .WithMessage("File type is not supported. Please re-upload a file with CSV or Docx format.");
         }
     }
