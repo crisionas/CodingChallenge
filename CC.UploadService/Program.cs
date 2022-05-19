@@ -1,7 +1,12 @@
 using CC.Common;
 using CC.UploadService.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((ctx, lc) => lc
+    .WriteTo.Console()
+    .ReadFrom.Configuration(ctx.Configuration));
 
 builder.Services.BindServices(builder.Configuration);
 
