@@ -2,6 +2,7 @@
 using CC.UploadService.Interfaces;
 using CC.UploadService.Models.Requests;
 using CC.UploadService.Repository.Entities;
+using Hangfire;
 
 namespace CC.UploadService.DataMiners
 {
@@ -10,98 +11,108 @@ namespace CC.UploadService.DataMiners
         protected readonly ILogger Logger;
         private readonly IFileRepository _repository;
         private readonly IUserRequestSettings _userRequest;
+        private readonly IBackgroundJobClient _jobClient;
 
         protected FileUploadRequest Request = null!;
 
-        protected DataMiner(ILogger logger, IFileRepository repository, IUserRequestSettings userRequest)
+        protected DataMiner(ILogger logger, IFileRepository repository, IUserRequestSettings userRequest, IBackgroundJobClient jobClient)
         {
             _repository = repository;
             _userRequest = userRequest;
             Logger = logger;
+            _jobClient = jobClient;
         }
 
         #region public methods
+
+        protected string? ParsedString;
+
         /// <summary>
         /// Execute the processor
         /// </summary>
         /// <param name="request">FileUploadRequest</param>
         /// <returns>Task</returns>
-        public async Task ExecuteAsync(FileUploadRequest request)
+        public async Task<string?> ExecuteAsync(FileUploadRequest request)
         {
+            string? trackId = default;
             Request = request;
-
             try
             {
                 Logger.LogDebug("ExtractData process has started.");
-                var ms = await ExtractData();
+                var byteArray = await ExtractData();
 
                 Logger.LogDebug("ParseData process has started.");
-                var data = ParseData(ms);
+                trackId = _jobClient.Enqueue(() => ParseData(byteArray));
+
+                var fileData = AttachFileData(trackId);
 
                 Logger.LogDebug("AnalyzeData process has started.");
-                await AnalyzeData(data!);
+                BackgroundJob.ContinueJobWith(trackId, () => AnalyzeData());
 
                 Logger.LogDebug("SaveData process has started.");
-                await SaveData(data!);
+                BackgroundJob.ContinueJobWith(trackId, () => SaveData(fileData));
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "ExecuteAsync error");
             }
+
+            return trackId;
         }
-
-        #endregion
-
-        #region protected methods
 
         /// <summary>
         /// Extract the data from FileUploadRequest
         /// </summary>
-        /// <returns>Task<MemoryStream></returns>
-        protected async Task<MemoryStream> ExtractData()
+        /// <returns>Task</returns>
+        public async Task<byte[]> ExtractData()
         {
-            var ms = new MemoryStream();
-            await Request.File?.CopyToAsync(ms)!;
-            return ms;
+            var stream = new MemoryStream();
+            await Request.File?.CopyToAsync(stream)!;
+            return stream.ToArray();
         }
 
         /// <summary>
         /// Parse data from MemoryStream
         /// </summary>
-        /// <param name="stream">MemoryStream</param>
-        /// <returns>string</returns>
-        protected abstract string? ParseData(MemoryStream stream);
+        /// <returns>void</returns>
+        public abstract void ParseData(byte[] byteArray);
 
         /// <summary>
         /// Analyze the data, in case you need some validations within the system
         /// </summary>
-        /// <param name="data">String</param>
         /// <returns>Task</returns>
-        protected abstract Task AnalyzeData(string data);
-
-        #endregion
-
-
-        #region private methods, that needs to be hidden and is the same for all
+        public abstract void AnalyzeData();
 
         /// <summary>
         /// Save the data
         /// </summary>
-        /// <param name="data">String</param>
         /// <returns>Task</returns>
-        private async Task SaveData(string data)
+        public async Task SaveData(FileData file)
         {
-            var file = new FileData
-            {
-                Data = data,
-                Username = _userRequest.Username,
-                Description = Request.Description,
-                Name = Request.Name,
-                LastUpdate = DateTime.UtcNow
-            };
-
+            file.Data = ParsedString;
             await _repository.SaveOrUpdateAsync(file);
             Logger.LogDebug("SaveData process finished successfully.");
+        }
+
+        #endregion
+
+        #region private methods, that needs to be hidden and is the same for all
+
+        /// <summary>
+        /// Attach file data
+        /// </summary>
+        /// <param name="jobId">Job id</param>
+        /// <returns>FileData</returns>
+        private FileData AttachFileData(string jobId)
+        {
+            return new FileData
+            {
+                Username = _userRequest.Username,
+                FileId = jobId,
+                Name = Request.Name,
+                Description = Request.Description,
+                LastUpdate = DateTime.UtcNow
+            };
         }
         #endregion
     }

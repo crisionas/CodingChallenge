@@ -1,25 +1,24 @@
 ﻿using CC.Common;
 using CC.UploadService.Interfaces;
+using Hangfire;
 using System.Text;
 
 namespace CC.UploadService.DataMiners
 {
     public class CsvDataMiner : DataMiner
     {
-        public CsvDataMiner(ILogger<CsvDataMiner> logger, IFileRepository repository, IUserRequestSettings userRequest) : base(logger, repository, userRequest)
+        public CsvDataMiner(ILogger<CsvDataMiner> logger, IFileRepository repository,
+            IUserRequestSettings userRequest, IBackgroundJobClient jobClient) : base(logger, repository, userRequest, jobClient)
         {
         }
 
-        protected override string? ParseData(MemoryStream stream)
+        public override void ParseData(byte[] byteArray)
         {
-            var byteArray = stream.ToArray();
-            var str = Encoding.UTF8.GetString(byteArray);
-            return str;
+            ParsedString = Encoding.UTF8.GetString(byteArray);
         }
 
-        protected override Task AnalyzeData(string data)
+        public override void AnalyzeData()
         {
-            return Task.CompletedTask;
         }
     }
 }
