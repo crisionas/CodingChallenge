@@ -13,8 +13,8 @@ namespace CC.UploadService.Validators
 
             RuleFor(x => x.ContentType)
                 .NotNull()
-                .Must(x => x.Equals(FileFormats.CsvFormat) || x.Equals(FileFormats.DocxFormat))
-                .WithMessage("File type is not supported. Please re-upload a file with CSV or Docx format.");
+                .Must(x => x.Equals(FileFormats.CsvFormat) || x.Equals(FileFormats.PdfFormat))
+                .WithMessage("File type is not supported. Please re-upload a file with CSV or PDF format.");
         }
     }
 }
