@@ -2,11 +2,12 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
-EXPOSE 80
+EXPOSE 7081
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["CC.NotificationService/CC.NotificationService.csproj", "CC.NotificationService/"]
+COPY ["CC.Common/CC.Common.csproj", "CC.Common/"]
 RUN dotnet restore "CC.NotificationService/CC.NotificationService.csproj"
 COPY . .
 WORKDIR "/src/CC.NotificationService"
