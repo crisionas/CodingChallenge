@@ -1,5 +1,6 @@
 ﻿using CC.Common.Models;
 using Microsoft.Extensions.Logging;
+using Serilog.Extensions.Logging;
 
 namespace CC.Common
 {
@@ -10,6 +11,18 @@ namespace CC.Common
         public BaseWorker(ILogger logger)
         {
             Logger = logger;
+        }
+
+
+        /// <summary>
+        /// Create Logger instance
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        protected static ILogger<T> GetLogger<T>()
+        {
+            var nf = new SerilogLoggerFactory();
+            return nf.CreateLogger<T>();
         }
 
         /// <summary>
