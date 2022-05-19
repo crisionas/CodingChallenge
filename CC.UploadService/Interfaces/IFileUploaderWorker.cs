@@ -10,6 +10,6 @@ namespace CC.UploadService.Interfaces
         /// </summary>
         /// <param name="request">FileUploadRequest</param>
         /// <returns>Task</returns>
-        Task<FileUploadResponse> UploadFileAsync(FileUploadRequest request);
+        Task UploadFileAsync(FileUploadRequest request);
     }
 }

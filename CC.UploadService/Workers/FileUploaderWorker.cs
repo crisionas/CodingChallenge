@@ -3,7 +3,6 @@ using CC.UploadService.DataMiners;
 using CC.UploadService.Helpers;
 using CC.UploadService.Interfaces;
 using CC.UploadService.Models.Requests;
-using CC.UploadService.Models.Responses;
 using Hangfire;
 
 namespace CC.UploadService.Workers
@@ -13,17 +12,19 @@ namespace CC.UploadService.Workers
         private readonly IUserRequestSettings _requestSettings;
         private readonly IFileRepository _fileRepository;
         private readonly IBackgroundJobClient _jobClient;
+        private readonly IEmailSenderWorker _emailSenderWorker;
 
-        public FileUploaderWorker(ILogger<FileUploaderWorker> logger, IUserRequestSettings requestSettings, IFileRepository fileRepository, IBackgroundJobClient jobClient) : base(logger)
+        public FileUploaderWorker(ILogger<FileUploaderWorker> logger, IUserRequestSettings requestSettings,
+            IFileRepository fileRepository, IBackgroundJobClient jobClient, IEmailSenderWorker emailSenderWorker) : base(logger)
         {
             _requestSettings = requestSettings;
             _fileRepository = fileRepository;
             _jobClient = jobClient;
+            _emailSenderWorker = emailSenderWorker;
         }
 
-        public async Task<FileUploadResponse> UploadFileAsync(FileUploadRequest request)
+        public async Task UploadFileAsync(FileUploadRequest request)
         {
-            var response = new FileUploadResponse();
             try
             {
                 if (request.File == null)
@@ -33,14 +34,12 @@ namespace CC.UploadService.Workers
 
                 Logger.LogDebug($"File with main name {request.Name}, {request.File.Name} has started processing.");
 
-                response.TrackId = await dataMiner?.ExecuteAsync(request)!;
+                await dataMiner?.ExecuteAsync(request)!;
             }
             catch (Exception e)
             {
-                WriteBaseResponse(response, e, "UploadFileAsync error");
+                WriteBaseResponse(null, e, "UploadFileAsync error");
             }
-
-            return response;
         }
 
         #region private methods
@@ -48,9 +47,9 @@ namespace CC.UploadService.Workers
         private IDataMiner? SelectDataMiner(string fileType)
         {
             if (string.Equals(fileType, FileFormats.PdfFormat))
-                return new PdfDataMiner(GetLogger<PdfDataMiner>(), _fileRepository, _requestSettings, _jobClient);
+                return new PdfDataMiner(GetLogger<PdfDataMiner>(), _fileRepository, _requestSettings, _jobClient, _emailSenderWorker);
             if (string.Equals(fileType, FileFormats.CsvFormat))
-                return new CsvDataMiner(GetLogger<CsvDataMiner>(), _fileRepository, _requestSettings, _jobClient);
+                return new CsvDataMiner(GetLogger<CsvDataMiner>(), _fileRepository, _requestSettings, _jobClient, _emailSenderWorker);
             throw new Exception($"File type {fileType} is not supported.");
         }
 

@@ -9,7 +9,8 @@ namespace CC.UploadService.DataMiners
     public class PdfDataMiner : DataMiner
     {
         public PdfDataMiner(ILogger<PdfDataMiner> logger, IFileRepository repository,
-            IUserRequestSettings userRequest, IBackgroundJobClient jobClient) : base(logger, repository, userRequest, jobClient)
+            IUserRequestSettings userRequest, IBackgroundJobClient jobClient, IEmailSenderWorker emailWorker)
+            : base(logger, repository, userRequest, jobClient, emailWorker)
         {
         }
 

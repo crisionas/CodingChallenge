@@ -1,4 +1,5 @@
 ﻿using CC.Common;
+using CC.Common.Models;
 using CC.UploadService.Interfaces;
 using CC.UploadService.Models.Requests;
 using CC.UploadService.Repository.Entities;
@@ -12,15 +13,18 @@ namespace CC.UploadService.DataMiners
         private readonly IFileRepository _repository;
         private readonly IUserRequestSettings _userRequest;
         private readonly IBackgroundJobClient _jobClient;
+        private readonly IEmailSenderWorker _emailWorker;
 
         protected FileUploadRequest Request = null!;
 
-        protected DataMiner(ILogger logger, IFileRepository repository, IUserRequestSettings userRequest, IBackgroundJobClient jobClient)
+        protected DataMiner(ILogger logger, IFileRepository repository, IUserRequestSettings userRequest,
+            IBackgroundJobClient jobClient, IEmailSenderWorker emailWorker)
         {
             _repository = repository;
             _userRequest = userRequest;
             Logger = logger;
             _jobClient = jobClient;
+            _emailWorker = emailWorker;
         }
 
         #region public methods
@@ -32,9 +36,8 @@ namespace CC.UploadService.DataMiners
         /// </summary>
         /// <param name="request">FileUploadRequest</param>
         /// <returns>Task</returns>
-        public async Task<string?> ExecuteAsync(FileUploadRequest request)
+        public async Task ExecuteAsync(FileUploadRequest request)
         {
-            string? trackId = default;
             Request = request;
             try
             {
@@ -42,7 +45,8 @@ namespace CC.UploadService.DataMiners
                 var byteArray = await ExtractData();
 
                 Logger.LogDebug("ParseData process has started.");
-                trackId = _jobClient.Enqueue(() => ParseData(byteArray));
+                var trackId = _jobClient.Enqueue(() => ParseData(byteArray));
+                await SendMailAsync(_userRequest.Email!, $"Your file has started processing. Tracking Id: {trackId}");
 
                 var fileData = AttachFileData(trackId);
 
@@ -51,13 +55,14 @@ namespace CC.UploadService.DataMiners
 
                 Logger.LogDebug("SaveData process has started.");
                 BackgroundJob.ContinueJobWith(trackId, () => SaveData(fileData));
+
+                BackgroundJob.ContinueJobWith(trackId, () => SendResult(true, null, _userRequest.Email));
             }
             catch (Exception e)
             {
                 Logger.LogError(e, "ExecuteAsync error");
+                await SendResult(false, e.Message);
             }
-
-            return trackId;
         }
 
         /// <summary>
@@ -94,6 +99,21 @@ namespace CC.UploadService.DataMiners
             Logger.LogDebug("SaveData process finished successfully.");
         }
 
+        /// <summary>
+        /// Send the final result
+        /// </summary>
+        /// <param name="isSuccessful">The process success</param>
+        /// <param name="errorMessage">Error message</param>
+        /// <param name="email">Email is necessary to be explicit within Hangfire jobs</param>
+        /// <returns></returns>
+        public async Task SendResult(bool isSuccessful = true, string? errorMessage = null, string? email = null)
+        {
+            var message = isSuccessful
+                ? "The file was uploaded successful."
+                : $"The file upload failed. Error:{errorMessage}";
+            await SendMailAsync(_userRequest.Email! ?? email!, message);
+        }
+
         #endregion
 
         #region private methods, that needs to be hidden and is the same for all
@@ -113,6 +133,19 @@ namespace CC.UploadService.DataMiners
                 Description = Request.Description,
                 LastUpdate = DateTime.UtcNow
             };
+        }
+
+        private async Task SendMailAsync(string email, string message)
+        {
+            if (string.IsNullOrEmpty(email))
+                return;
+            var emailMessage = new EmailMessage
+            {
+                Email = email,
+                Subject = "Uploading file process",
+                Message = message
+            };
+            await _emailWorker.SendNotification(emailMessage);
         }
         #endregion
     }

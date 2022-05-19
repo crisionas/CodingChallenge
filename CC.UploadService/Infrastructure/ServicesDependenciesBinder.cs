@@ -25,6 +25,7 @@ namespace CC.UploadService.Infrastructure
             services.AddScoped<IFileUploaderWorker, FileUploaderWorker>();
             services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();
             services.AddScoped<ITrackWorker, TrackWorker>();
+            services.AddScoped<IEmailSenderWorker, EmailSenderWorker>();
 
             //Add Fluent validation DJ
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

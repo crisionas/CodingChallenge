@@ -8,7 +8,8 @@ namespace CC.UploadService.DataMiners
     public class CsvDataMiner : DataMiner
     {
         public CsvDataMiner(ILogger<CsvDataMiner> logger, IFileRepository repository,
-            IUserRequestSettings userRequest, IBackgroundJobClient jobClient) : base(logger, repository, userRequest, jobClient)
+            IUserRequestSettings userRequest, IBackgroundJobClient jobClient, IEmailSenderWorker emailWorker) 
+            : base(logger, repository, userRequest, jobClient, emailWorker)
         {
         }
 
