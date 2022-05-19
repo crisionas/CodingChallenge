@@ -3,11 +3,12 @@ using CC.UploadService.Interfaces;
 using CC.UploadService.Models.Requests;
 using CC.UploadService.Models.Responses;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CC.UploadService.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("upload")]
     [ApiController]
     public class UploadController : BaseController
