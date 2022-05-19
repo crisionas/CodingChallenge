@@ -3,9 +3,9 @@ using CC.UploadService.Interfaces;
 using CC.UploadService.Repository;
 using CC.UploadService.Workers;
 using FluentValidation;
-using System.Reflection;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using System.Reflection;
 
 namespace CC.UploadService.Infrastructure
 {
@@ -23,10 +23,12 @@ namespace CC.UploadService.Infrastructure
             //Add Scoped
             services.AddScoped<IUserRequestSettings, UserRequestSettings>();
             services.AddScoped<IFileUploaderWorker, FileUploaderWorker>();
+            services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();
+            services.AddScoped<ITrackWorker, TrackWorker>();
 
             //Add Fluent validation DJ
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            
+
             //Add HangFire DJ
             services.AddHangfire(c => c.UseMemoryStorage());
             services.AddHangfireServer();
