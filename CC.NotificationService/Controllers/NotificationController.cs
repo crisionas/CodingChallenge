@@ -20,7 +20,7 @@ namespace CC.NotificationService.Controllers
             _emailValidator = emailValidator;
         }
 
-        [SwaggerOperation(Summary = "Send email notification to specific email.")]
+        [SwaggerOperation(Summary = "Send email notification to a specific email.")]
         [HttpPost]
         [ProducesResponseType(204, Type = typeof(void))]
         [ProducesResponseType(400, Type = typeof(BaseResponse))]
