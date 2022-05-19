@@ -1,5 +1,4 @@
 ﻿using CC.Common.Models;
-using CC.NotificationService.Models;
 
 namespace CC.NotificationService.Interfaces
 {

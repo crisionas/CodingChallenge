@@ -1,4 +1,4 @@
-﻿using CC.NotificationService.Models;
+﻿using CC.Common.Models;
 using FluentValidation;
 
 namespace CC.NotificationService.Validators

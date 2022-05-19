@@ -1,7 +1,6 @@
 ﻿using CC.Common;
 using CC.Common.Models;
 using CC.NotificationService.Interfaces;
-using CC.NotificationService.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
