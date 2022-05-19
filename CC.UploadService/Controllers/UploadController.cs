@@ -1,4 +1,5 @@
 ﻿using CC.Common;
+using CC.UploadService.Interfaces;
 using CC.UploadService.Models.Requests;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -11,21 +12,27 @@ namespace CC.UploadService.Controllers
     public class UploadController : BaseController
     {
         private readonly IValidator<FileUploadRequest> _fileReqValidator;
+        private readonly IFileUploaderWorker _fileUploaderWorker;
 
-        public UploadController(IValidator<FileUploadRequest> fileReqValidator)
+        private const int MaxValue = 1073741824; // Equal to 1Gb
+
+        public UploadController(IValidator<FileUploadRequest> fileReqValidator, IFileUploaderWorker fileUploaderWorker)
         {
             _fileReqValidator = fileReqValidator;
+            _fileUploaderWorker = fileUploaderWorker;
         }
 
         [HttpPost]
-        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
+        [RequestFormLimits(ValueLengthLimit = MaxValue, MultipartBodyLengthLimit = MaxValue)]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> UploadFile([FromForm] FileUploadRequest request)
         {
             var validationResult = await _fileReqValidator.ValidateAsync(request);
             if (!validationResult.IsValid)
                 return GetResponseFromValidationResult(validationResult);
-            return Ok("test");
+
+            await _fileUploaderWorker.UploadFileAsync(request);
+            return NoContent();
         }
     }
 }
