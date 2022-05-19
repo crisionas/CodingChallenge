@@ -5,6 +5,11 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(7080);
+});
+
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     .ReadFrom.Configuration(ctx.Configuration));
@@ -14,8 +19,11 @@ builder.Services.BindServices(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenOptions();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+app.UseHealthChecks("/healthy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

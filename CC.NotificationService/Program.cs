@@ -6,6 +6,11 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(7081);
+});
+
 // Add Options
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(SmtpSettings.SectionName));
 
@@ -18,8 +23,11 @@ builder.Services.AddScoped<IEmailWorker, EmailWorker>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+app.UseHealthChecks("/healthy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
