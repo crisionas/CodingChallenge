@@ -3,6 +3,7 @@ using CC.NotificationService.Models;
 using CC.NotificationService.Workers;
 using FluentValidation;
 using System.Reflection;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,10 @@ builder.WebHost.UseKestrel(serverOptions =>
 {
     serverOptions.ListenAnyIP(7081);
 });
+
+builder.Host.UseSerilog((ctx, lc) => lc
+    .WriteTo.Console()
+    .ReadFrom.Configuration(ctx.Configuration));
 
 // Add Options
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(SmtpSettings.SectionName));

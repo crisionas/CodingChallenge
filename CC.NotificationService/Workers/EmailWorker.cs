@@ -44,7 +44,7 @@ namespace CC.NotificationService.Workers
 
                 await client.SendMailAsync(mailMessage);
 
-                Logger.LogDebug($"SendMailAsync | The message for the address {mailMessage.To} was successfully sent");
+                Logger.LogDebug($"The message for the address {mailMessage.To} was successfully sent");
             }
             catch (Exception e)
             {
