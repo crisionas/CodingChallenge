@@ -1,3 +1,4 @@
+using System.Reflection;
 using CC.Common;
 using CC.IdentityService.Infrastructure;
 using Serilog;
@@ -12,7 +13,10 @@ builder.WebHost.UseKestrel(serverOptions =>
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     .ReadFrom.Configuration(ctx.Configuration));
-builder.Services.AddControllers();
+
+builder.Services.AddFluentValidationBaseResponse(x =>
+    x.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+
 builder.Services.BindServices(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenOptions();

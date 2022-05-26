@@ -3,6 +3,7 @@ using CC.NotificationService.Models;
 using CC.NotificationService.Workers;
 using FluentValidation;
 using System.Reflection;
+using CC.Common;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,17 +16,15 @@ builder.WebHost.UseKestrel(serverOptions =>
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     .ReadFrom.Configuration(ctx.Configuration));
-
 // Add Options
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(SmtpSettings.SectionName));
-
-//Add Fluent validation DJ
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 //Add Scoped Services
 builder.Services.AddScoped<IEmailWorker, EmailWorker>();
 
-builder.Services.AddControllers();
+builder.Services.AddFluentValidationBaseResponse(x =>
+    x.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options=>options.EnableAnnotations());
 builder.Services.AddHealthChecks();

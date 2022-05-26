@@ -24,9 +24,6 @@ namespace CC.IdentityService.Infrastructure
             //Singleton services
             services.AddSingleton<IAuthRepository, AuthRepository>();
             services.AddAutoMapper(typeof(MappingSetup));
-
-            //Add Fluent validation DJ
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

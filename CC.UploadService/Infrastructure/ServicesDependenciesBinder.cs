@@ -27,12 +27,10 @@ namespace CC.UploadService.Infrastructure
             services.AddScoped<ITrackWorker, TrackWorker>();
             services.AddScoped<IEmailSenderWorker, EmailSenderWorker>();
 
-            //Add Fluent validation DJ
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
             //Add HangFire DJ
             services.AddHangfire(c => c.UseMemoryStorage());
             services.AddHangfireServer();
+
         }
     }
 }

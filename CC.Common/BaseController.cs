@@ -26,21 +26,6 @@ namespace CC.Common
         /// <returns>IActionResult</returns>
         protected IActionResult PrepareNoContentResult(BaseResponse response) => response.HasError ? GetResponse(response) : NoContent();
 
-        /// <summary>
-        /// Prepare IActionResult from ValidationResult
-        /// </summary>
-        /// <param name="validationResult">ValidationResult</param>
-        /// <returns>IActionResult</returns>
-        protected IActionResult GetResponseFromValidationResult(ValidationResult validationResult)
-        {
-            var errorCode = validationResult.Errors.FirstOrDefault()?.ErrorCode;
-            var response = new BaseResponse
-            {
-                ErrorMessage = validationResult.Errors.Select(e => e.ErrorMessage).Aggregate((total, current) => $"{total} {current}"),
-            };
-            return GetResponse(response);
-        }
-
         #endregion
 
         #region private methods

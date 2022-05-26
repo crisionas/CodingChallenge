@@ -5,6 +5,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace CC.UploadService.Controllers
 {
@@ -31,10 +32,6 @@ namespace CC.UploadService.Controllers
         [ProducesResponseType(204, Type = typeof(void))]
         public async Task<IActionResult> UploadFile([FromForm] FileUploadRequest request)
         {
-            var validationResult = await _fileReqValidator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-                return GetResponseFromValidationResult(validationResult);
-
             await _fileUploaderWorker.UploadFileAsync(request);
             return NoContent();
         }
